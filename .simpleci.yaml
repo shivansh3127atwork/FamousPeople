@@ -1,0 +1,60 @@
+pipeline:
+  name: Famous People — CI Pipeline
+  image: node:20-alpine
+
+  branches:
+    - main
+
+  deploy:
+    provider: github-pages
+    directory: .
+    branch: gh-pages
+
+  steps:
+    - name: Check required files exist
+      run: |
+        echo "Checking project structure..."
+        test -f index.html && echo "  ✓ index.html" || (echo "MISSING: index.html" && exit 1)
+        test -f style.css  && echo "  ✓ style.css"  || (echo "MISSING: style.css"  && exit 1)
+        test -f app.js     && echo "  ✓ app.js"     || (echo "MISSING: app.js"     && exit 1)
+        test -f data.js    && echo "  ✓ data.js"    || (echo "MISSING: data.js — this is where your people go!" && exit 1)
+        echo "All required files present!"
+
+    - name: Validate PEOPLE array in data.js
+      run: |
+        COUNT=$(grep -c "name:" data.js || true)
+        echo "Found $COUNT people in data.js"
+        if [ "$COUNT" -lt 1 ]; then
+          echo "ERROR: data.js has no people! Add at least one { name: ... } entry."
+          exit 1
+        fi
+        echo "✓ People count OK ($COUNT people)"
+
+    - name: Check data.js has PEOPLE variable
+      run: |
+        grep -q "const PEOPLE" data.js && echo "✓ PEOPLE array declared" || (echo "ERROR: 'const PEOPLE' not found in data.js" && exit 1)
+        grep -q "PEOPLE = \[" data.js  && echo "✓ PEOPLE is an array"    || (echo "ERROR: PEOPLE must be an array" && exit 1)
+
+    - name: Validate JavaScript syntax
+      run: |
+        echo "Checking data.js syntax..."
+        node --check data.js && echo "✓ data.js syntax valid"
+        echo "Checking app.js syntax..."
+        node --check app.js  && echo "✓ app.js syntax valid"
+
+    - name: Check HTML links data.js and app.js
+      run: |
+        grep -q "data.js" index.html && echo "✓ data.js linked in HTML" || (echo "ERROR: data.js not linked in index.html" && exit 1)
+        grep -q "app.js"  index.html && echo "✓ app.js linked in HTML"  || (echo "ERROR: app.js not linked in index.html"  && exit 1)
+
+    - name: Print summary
+      run: |
+        echo ""
+        echo "========================================"
+        echo "   Famous People Site — CI PASSED ✅   "
+        echo "========================================"
+        echo "  People in data.js : $(grep -c 'name:' data.js)"
+        echo "  HTML lines        : $(wc -l < index.html)"
+        echo "  CSS lines         : $(wc -l < style.css)"
+        echo "  JS lines          : $(wc -l < app.js)"
+        echo "========================================"
