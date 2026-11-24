@@ -1,11 +1,13 @@
-// ╔══════════════════════════════════════════════════════╗
-// ║           EDIT THIS FILE TO ADD / REMOVE PEOPLE     ║
-// ║  - Add a new { } block to add a person              ║
-// ║  - Delete a { } block to remove a person            ║
-// ║  - Change any field — it reflects on the site!      ║
-// ╚══════════════════════════════════════════════════════╝
 
 const PEOPLE = [
+  {
+    name:  "Arjun Gupta",
+    field: "Physics",
+    known: "Theory of Speed",
+    years: "1879 – 1955",
+    emoji: "⚛️",
+    fact:  "He was a great person"
+  },
   {
     name:  "Albert Einstein",
     field: "Physics",
