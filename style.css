@@ -12,7 +12,7 @@
   --radius:  22px;
 }
 
-html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: white; color: var(--text); overflow-x: hidden; }
 
 /* ── Background orbs ─────────────────────────── */
 .bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
